@@ -1,0 +1,25 @@
+schema: spec-driven
+
+context: |
+  Project: Concessionária App - Sistema de Gestão Operacional
+  Domain: Gestão de lojas, carros, vendedores, clientes, financiamentos bancários e manutenção mecânica.
+  Tech stack: FastAPI (Backend), Streamlit (Frontend), Xano/XanoScript (Banco de dados e API).
+  Architecture: Frontend em Streamlit consome a API FastAPI/Xano. Regras de negócio centralizadas no backend.
+  Development: Desenvolvimento incremental orientado a specs (OpenSpec).
+  Language: Escrever artefatos e documentação em português brasileiro.
+
+rules:
+  proposal:
+    - Manter a proposta concisa e focada em uma única fatia funcional.
+  specs:
+    - Criar requisitos claros e verificáveis.
+  tasks:
+    - Dividir em tarefas pequenas e organizadas em sequência lógica.
+
+operations:
+  apply:
+    guidance:
+      - Validar a execução das telas e rotas antes de finalizar as tarefas.
+  archive:
+    guidance:
+      - Garantir que a spec refletiu as mudanças reais efetuadas.
