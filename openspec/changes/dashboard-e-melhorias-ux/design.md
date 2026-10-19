@@ -1,14 +1,20 @@
-# Design Técnico: Dashboard e Melhorias UX
+design técnico: dashboard e melhorias de ux
+1. arquitetura e componentes
+frontend (streamlit):
 
-## 1. Arquitetura e Componentes
-- **Frontend (Streamlit)**:
-  - Utilizará `st.session_state` para armazenar `loja_selecionada_id` (com opção "Todas").
-  - `st.sidebar` receberá o seletor de lojas carregado da API `/lojas` (ou listadas a partir de veículos) e indicador de status da API.
-  - Nova aba `📊 Dashboard` utilizando `st.metric` para KPIs e `st.bar_chart` / `st.altair_chart` para distribuições.
-- **Backend (FastAPI)**:
-  - Aproveitar endpoints existentes (`/veiculos`, etc.) ou consumir dados diretamente. Se necessário, agregar no cliente Streamlit para manter agilidade.
+usa st.session_state pra guardar o loja_selecionada_id (com a opção "todas").
 
-## 2. Fluxo de Dados
-1. Ao iniciar a sessão autenticada, o Streamlit busca lojas e veículos.
-2. Na barra lateral, o usuário escolhe a loja.
-3. Todas as abas (Dashboard, Estoque, Vendas, Manutenção) respeitam o filtro da loja selecionada no estado global.
+o seletor na st.sidebar puxa da api /lojas (ou monta direto com base nos veículos), junto do indicador de status da api.
+
+aba dashboard usa st.metric pros kpis e st.bar_chart / st.altair_chart pra exibir a distribuição dos dados.
+
+backend (fastapi):
+
+reutiliza os endpoints que já existem (/veiculos, etc.). as agregações podem ser feitas direto no streamlit pra ir mais rápido.
+
+2. fluxo de dados
+assim que autentica, o streamlit carrega as lojas e veículos.
+
+o usuário seleciona a loja na barra lateral.
+
+as abas (dashboard, estoque, vendas e manutenção) aplicam esse filtro globalmente.

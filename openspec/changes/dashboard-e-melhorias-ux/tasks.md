@@ -1,19 +1,28 @@
-# Tarefas de Implementação: Dashboard e Melhorias UX
+tarefas de implementação: dashboard e melhorias de ux
+[x] tarefa 1: barra lateral avançada
 
-- [x] **Tarefa 1: Barra Lateral Avançada**
-  - [x] Adicionar indicador de status da API Xano / FastAPI na sidebar.
-  - [x] Implementar seletor de Loja global (`st.session_state['filtro_loja_id']`).
-  - [x] Adicionar atalhos ou informações resumidas do usuário logado.
+[x] colocar indicador de status da api (xano / fastapi) na sidebar.
 
-- [x] **Tarefa 2: Aba de Dashboard Executivo**
-  - [x] Criar aba "📊 Dashboard" como a primeira aba de navegação.
-  - [x] Implementar cartões de métricas (KPIs): Total de Veículos, Veículos Disponíveis, Valor Total em Estoque.
-  - [x] Adicionar gráficos visuais (distribuição por marca e por status).
+[x] criar o seletor global de loja (st.session_state['filtro_loja_id']).
 
-- [x] **Tarefa 3: Filtros Avançados no Estoque**
-  - [x] Adicionar filtro de texto (modelo/marca), slider de preço e seletor de status na aba de estoque.
-  - [x] Integrar filtro global de loja na listagem de veículos.
+[x] adicionar atalhos e dados resumidos do usuário logado.
 
-- [x] **Tarefa 4: Validação e Testes**
-  - [x] Testar navegação e persistência de estado no Streamlit.
-  - [x] Executar testes automatizados do backend se aplicável (`pytest`).
+[x] tarefa 2: aba de dashboard executivo
+
+[x] criar a aba "dashboard" como primeira opção do menu.
+
+[x] montar os cards de métricas (kpis): total de veículos, disponíveis e valor em estoque.
+
+[x] criar gráficos visuais (distribuição por marca e status).
+
+[x] tarefa 3: filtros no estoque
+
+[x] adicionar busca por texto (modelo/marca), slider de preço e filtro de status no estoque.
+
+[x] aplicar o filtro global de loja na listagem dos veículos.
+
+[x] tarefa 4: validação e testes
+
+[x] testar a navegação e a persistência de estado no streamlit.
+
+[x] rodar os testes automatizados do backend (pytest).
