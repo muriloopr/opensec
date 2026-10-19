@@ -19,6 +19,7 @@ if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
     st.session_state["user_email"] = ""
     st.session_state["access_token"] = ""
+    st.session_state["filtro_loja_id"] = "Todas"
 
 st.title("🚗 Sistema de Gestão de Concessionária")
 
@@ -66,59 +67,134 @@ if not st.session_state["authenticated"]:
                     except Exception as e:
                         st.error(f"Erro de conexão com o backend: {e}")
 else:
-    # Barra Lateral com Informações do Usuário
-    st.sidebar.markdown(f"### 👤 Usuário Logado\n**{st.session_state['user_email']}**")
-    st.sidebar.success("Conectado ao Xano Cloud")
+    # --- BARRA LATERAL AVANÇADA ---
+    st.sidebar.markdown(f"### 👤 Utilizador\n**{st.session_state['user_email']}**")
+    
+    # Status de Conexão com API
+    try:
+        r_ping = requests.get(f"{API_URL}/veiculos", timeout=3)
+        if r_ping.status_code == 200:
+            st.sidebar.success("🟢 API Conectada (Xano Cloud)")
+        else:
+            st.sidebar.warning("🟡 API Online com Alerta")
+    except Exception:
+        st.sidebar.error("🔴 API Offline / Indisponível")
+
+    st.sidebar.divider()
+    
+    # Seletor Global de Loja
+    st.sidebar.markdown("### 🏢 Filtro Global")
+    lojas_disponiveis = ["Todas"]
+    try:
+        r_l = requests.get(f"{API_URL}/lojas", timeout=5)
+        if r_l.status_code == 200:
+            for l_obj in r_l.json():
+                lojas_disponiveis.append(f"Loja #{l_obj.get('id')} - {l_obj.get('nome', 'Matriz')}")
+    except Exception:
+        pass
+
+    loja_selecionada = st.sidebar.selectbox("Filtrar por Loja", lojas_disponiveis)
+    st.session_state["filtro_loja_id"] = loja_selecionada
+
+    st.sidebar.divider()
     if st.sidebar.button("🚪 Terminar Sessão", use_container_width=True):
         st.session_state["authenticated"] = False
         st.session_state["user_email"] = ""
         st.session_state["access_token"] = ""
         st.rerun()
 
-    # Navegação por Abas Principais
-    tab_estoque, tab_venda, tab_manut, tab_equipe = st.tabs([
+    # Navegação por Abas Principais (Com Dashboard e Vendas)
+    tab_dash, tab_estoque, tab_venda, tab_historico_vendas, tab_manut, tab_equipe = st.tabs([
+        "📊 Dashboard Executivo",
         "📦 Estoque de Veículos",
         "💰 Registrar Venda",
+        "📋 Histórico de Vendas",
         "🔧 Ordens de Manutenção",
         "🏢 Funcionários e Lojas"
     ])
 
-    # --- ABA 1: ESTOQUE DE VEÍCULOS ---
-    with tab_estoque:
-        st.subheader("Estoque de Veículos")
-        
-        # Obter todos os veículos para métricas
-        veiculos_todos = []
+    # Obter todos os veículos base
+    veiculos_todos = []
+    try:
+        res_all = requests.get(f"{API_URL}/veiculos", timeout=30)
+        if res_all.status_code == 200:
+            veiculos_todos = res_all.json()
+    except Exception:
+        pass
+
+    # Aplicar filtro global de loja se selecionada
+    if loja_selecionada != "Todas":
+        # Extrair o ID da loja da string ex: "Loja #1 - Matriz" -> id 1
         try:
-            res_all = requests.get(f"{API_URL}/veiculos", timeout=30)
-            if res_all.status_code == 200:
-                veiculos_todos = res_all.json()
+            loja_id_filtro = int(loja_selecionada.split("#")[1].split(" ")[0])
+            veiculos_todos = [v for v in veiculos_todos if v.get("loja_id") == loja_id_filtro]
         except Exception:
             pass
 
-        # Métricas no topo
-        c1, c2, c3, c4 = st.columns(4)
+    # --- ABA 0: DASHBOARD EXECUTIVO ---
+    with tab_dash:
+        st.subheader("📊 Dashboard Executivo da Rede")
+        
         total = len(veiculos_todos)
         disp = sum(1 for v in veiculos_todos if v.get("status") == "disponivel")
         vend = sum(1 for v in veiculos_todos if v.get("status") == "vendido")
         manu = sum(1 for v in veiculos_todos if v.get("status") == "em_manutencao")
-        c1.metric("Total no Estoque", total)
-        c2.metric("Disponíveis", disp)
-        c3.metric("Vendidos", vend)
-        c4.metric("Em Manutenção", manu)
+        valor_total_estoque = sum(float(v.get("preco", 0)) for v in veiculos_todos if v.get("status") == "disponivel")
+
+        col_m1, col_m2, col_m3, col_m4, col_m5 = st.columns(5)
+        col_m1.metric("Veículos no Escopo", total)
+        col_m2.metric("Disponíveis", disp)
+        col_m3.metric("Vendidos", vend)
+        col_m4.metric("Em Manutenção", manu)
+        col_m5.metric("Valor em Estoque", f"R$ {valor_total_estoque:,.2f}")
 
         st.divider()
 
-        status_filter = st.selectbox("Filtrar por Status", ["Todos", "disponivel", "vendido", "em_manutencao"])
-        
+        col_g1, col_g2 = st.columns(2)
+        with col_g1:
+            st.markdown("#### 🚗 Distribuição por Status")
+            status_counts = {"Disponível": disp, "Vendido": vend, "Manutenção": manu}
+            st.bar_chart(status_counts)
+
+        with col_g2:
+            st.markdown("#### 🏷️ Veículos por Marca")
+            marcas_dict = {}
+            for v in veiculos_todos:
+                marca = v.get("marca", "Outros")
+                marcas_dict[marca] = marcas_dict.get(marca, 0) + 1
+            if marcas_dict:
+                st.bar_chart(marcas_dict)
+            else:
+                st.info("Sem dados de marcas disponíveis.")
+
+    # --- ABA 1: ESTOQUE DE VEÍCULOS ---
+    with tab_estoque:
+        st.subheader("Estoque de Veículos")
+
+        # Filtros avançados na aba de estoque
+        col_f1, col_f2, col_f3 = st.columns(3)
+        with col_f1:
+            status_filter = st.selectbox("Status", ["Todos", "disponivel", "vendido", "em_manutencao"])
+        with col_f2:
+            busca_texto = st.text_input("🔍 Buscar Marca ou Modelo", placeholder="Ex: Corolla, Toyota...")
+        with col_f3:
+            max_preco_val = max([float(v.get("preco", 100000)) for v in veiculos_todos], default=200000.0)
+            filtro_preco = st.slider("Preço Máximo (R$)", min_value=0.0, max_value=max(max_preco_val, 200000.0), value=max(max_preco_val, 200000.0), step=5000.0)
+
         veiculos_exibidos = veiculos_todos
         if status_filter != "Todos":
-            veiculos_exibidos = [v for v in veiculos_todos if v.get("status") == status_filter]
+            veiculos_exibidos = [v for v in veiculos_exibidos if v.get("status") == status_filter]
         
+        if busca_texto:
+            bt = busca_texto.lower()
+            veiculos_exibidos = [v for v in veiculos_exibidos if bt in v.get("marca", "").lower() or bt in v.get("modelo", "").lower()]
+
+        veiculos_exibidos = [v for v in veiculos_exibidos if float(v.get("preco", 0)) <= filtro_preco]
+
         if veiculos_exibidos:
             st.dataframe(veiculos_exibidos, use_container_width=True)
         else:
-            st.info("Nenhum veículo encontrado para o filtro selecionado.")
+            st.info("Nenhum veículo encontrado para os filtros selecionados.")
             
         with st.expander("➕ Cadastrar Novo Veículo", expanded=False):
             with st.form("form_veiculo"):
@@ -161,11 +237,10 @@ else:
     with tab_venda:
         st.subheader("Registrar Venda de Veículo")
         
-        # Veículos disponíveis para seleção
         veiculos_disp = [v for v in veiculos_todos if v.get("status") == "disponivel"]
         
         if not veiculos_disp:
-            st.info("Nenhum veículo disponível para venda no momento.")
+            st.info("Nenhum veículo disponível para venda no momento (verifique o filtro de loja).")
         else:
             opcoes_v = {f"#{v['id']} - {v['marca']} {v['modelo']} (R$ {v['preco']:,.2f})": v for v in veiculos_disp}
             veiculo_selecionado = st.selectbox("Selecione o Veículo Disponível", list(opcoes_v.keys()))
@@ -201,11 +276,20 @@ else:
                     except Exception as e:
                         st.error(f"Erro de conexão: {e}")
 
+    # --- ABA 3: HISTÓRICO DE VENDAS ---
+    with tab_historico_vendas:
+        st.subheader("📋 Veículos Vendidos")
+        
+        veiculos_vendidos = [v for v in veiculos_todos if v.get("status") == "vendido"]
+        if veiculos_vendidos:
+            st.dataframe(veiculos_vendidos, use_container_width=True)
+        else:
+            st.info("Nenhum veículo com status 'vendido' encontrado no estoque atual.")
+
     # --- ABA 3: MANUTENÇÃO ---
     with tab_manut:
         st.subheader("Ordens de Manutenção")
         
-        # Veículos não vendidos para manutenção
         veiculos_aptos = [v for v in veiculos_todos if v.get("status") != "vendido"]
         
         if not veiculos_aptos:

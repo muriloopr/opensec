@@ -171,3 +171,19 @@ def test_auth_signup_and_login(monkeypatch):
     data = r_login.json()
     assert data["access_token"] == "fake-jwt-token-xyz"
     assert data["email"] == signup_payload["email"]
+
+def test_listar_vendas(monkeypatch):
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.json.return_value = [
+        {"id": 1, "veiculo_id": 1, "cliente_id": 1, "vendedor_id": 2, "valor": 120000.0, "tipo_pagamento": "venda", "data": "2026-10-19"}
+    ]
+    monkeypatch.setattr(http_client, "get", lambda url, **kwargs: mock_resp)
+
+    response = client.get("/vendas")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert data[0]["veiculo_id"] == 1
+
