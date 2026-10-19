@@ -47,4 +47,5 @@ query venda verb=POST {
   }
 
   response = $venda
+  guid = "Qk9NL5c6V88rZsah7v5g_GsXouo"
 }

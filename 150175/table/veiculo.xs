@@ -23,4 +23,5 @@ table VEICULO {
   index = [
     {type: "primary", field: [{name: "id"}]}
   ]
+  guid = "HhmXzZ62d3VATTy5r4STIGHSXuQ"
 }

@@ -7,7 +7,6 @@ sistema web pra gerenciar a operação do dia a dia de uma rede de concessionár
 ## 2. problema
 
 centralizar a gestão de lojas, veículos, vendas, financiamentos e manutenções num lugar só, evitando bagunça no estoque e processo manual.
-
 ## 3. objetivos
 
 cuidar de todo o ciclo de vida dos carros na loja, desde o cadastro até a venda, financiamento e manutenção.

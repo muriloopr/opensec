@@ -42,4 +42,5 @@ query manutencao verb=POST {
   }
 
   response = $manutencao
+  guid = "aqwd_aR5Bue0g836T3OpCaoRr5Y"
 }

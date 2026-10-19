@@ -15,4 +15,5 @@ table LOJA {
   index = [
     {type: "primary", field: [{name: "id"}]}
   ]
+  guid = "zNBnymELa4bZX7pI505d-d75NFw"
 }

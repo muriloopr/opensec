@@ -14,4 +14,5 @@ query funcionario verb=GET {
   }
 
   response = $funcionarios
+  guid = "FIm6sGVdIvepQ2ThUPonBEmVuB4"
 }

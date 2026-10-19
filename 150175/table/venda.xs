@@ -29,4 +29,5 @@ table VENDA {
   index = [
     {type: "primary", field: [{name: "id"}]}
   ]
+  guid = "kOui848VbGvY8lr2A_dX7HHvwgY"
 }

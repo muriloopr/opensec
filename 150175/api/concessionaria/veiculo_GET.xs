@@ -16,4 +16,5 @@ query veiculo verb=GET {
   }
 
   response = $veiculos
+  guid = "okhJCKPibWfQjGCVHAfwfEwPM40"
 }

@@ -24,4 +24,5 @@ query veiculo verb=POST {
   }
 
   response = $veiculo
+  guid = "IKS3U8p1z5f3ZPUumqqODIQqJT8"
 }

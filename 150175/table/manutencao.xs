@@ -24,4 +24,5 @@ table MANUTENCAO {
   index = [
     {type: "primary", field: [{name: "id"}]}
   ]
+  guid = "cLnNVEUAE2h9b1__00peVfX1Jos"
 }

@@ -20,4 +20,5 @@ table FUNCIONARIO {
   index = [
     {type: "primary", field: [{name: "id"}]}
   ]
+  guid = "9S9pFtv0FS29sTOKEQqUqOaqkdo"
 }

@@ -19,4 +19,5 @@ query "veiculo/{veiculo_id}" verb=GET {
   }
 
   response = $veiculo
+  guid = "T2t6ACV_e3dIsDyuVqJhXXSfg1E"
 }
