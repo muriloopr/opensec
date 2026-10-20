@@ -1,47 +1,90 @@
-# readme - sistema de gestão para concessionárias
+# 🚗 Sistema de Gestão de Concessionária
 
-## 1. o problema
-
-gerenciar uma rede de concessionárias ou uma loja de veículos costuma ser caótico quando a informação fica espalhada em planilhas, sistemas legados ou conversas soltas.
-
-sem uma visão centralizada, a operação enfrenta gargalos comuns:
-
-* **falta de visibilidade do estoque**: dificuldade para saber em qual loja física determinado carro está parado.
-* **decisões sem dados**: ausência de kpis claros sobre faturamento, marcas mais vendidas e giro de estoque.
-* **processos desconectados**: desalinhamento no acompanhamento de financiamentos com bancos, histórico de manutenção dos carros e vendas finalizadas por equipe.
-
-## 2. público-alvo
-
-o sistema foi pensado para simplificar a rotina de:
-
-* **gestores e diretores de redes de concessionárias**: que precisam de dashboards executivos para acompanhar métricas de desempenho globais ou por unidade em tempo real.
-* **equipes de vendas e gerentes de loja**: que precisam buscar carros rapidamente no estoque, filtrar por faixa de preço/ano e acompanhar o status de negociações.
-* **equipes operacionais (mecanismos e administrativo)**: que fazem o controle das rotinas de manutenção dos veículos e o vínculo com instituições bancárias de financiamento.
+Aplicação web completa para gestão de redes de concessionárias de veículos, centralizando o controle de estoque, equipes, vendas, financiamentos e manutenções em um único lugar.
 
 ---
 
-## 3. escopo do mvp
+## 🎯 1. Problema que Resolvemos
+Gerenciar uma concessionária (ou rede de lojas) envolve lidar com múltiplos processos descentralizados: controle de estoque de veículos, comissões de vendedores, ordens de serviço de mecânicos, cadastros de clientes e acompanhamento de financiamentos bancários. 
 
-o produto mínimo viável (mvp) foca nas funcionalidades essenciais para operacionalizar a gestão e dar visibilidade ao negócio:
+O sistema elimina planilhas desorganizadas e processos manuais propensos a erros, centralizando todas as operações em uma interface intuitiva e conectada em tempo real com backend em nuvem (Xano).
 
-### 📊 dashboard executivo
+---
 
-* cartões de kpis operacionais: total de veículos, carros disponíveis e valor investido em estoque.
-* gráficos visuais com distribuição por marcas populares e status do veículo.
+## 👥 2. Público-Alvo
+* **Gerentes de Concessionária:** Necessitam de uma visão rápida e consolidada dos indicadores da rede (Dashboard Executivo, faturamento e veículos vendidos/disponíveis).
+* **Vendedores:** Precisam consultar rapidamente o estoque de veículos disponíveis por preço/marca e registrar novas vendas ou financiamentos com agilidade.
+* **Mecânicos / Equipe de Pós-Venda:** Precisam abrir e acompanhar ordens de manutenção e revisão de veículos.
+* **Administradores:** Precisam gerenciar o cadastro de lojas, funcionários e permissões de acesso.
 
-### 🚗 gestão e filtro de estoque
+---
 
-* busca rápida por marca ou modelo.
-* filtros por faixa de preço, ano, status do veículo e loja física.
-* visão unificada dos veículos à venda.
+## 🚀 3. Escopo do MVP (Minimum Viable Product)
 
-### 🏢 controle centralizado
+O MVP entrega um sistema funcional de ponta a ponta dividido nas seguintes funcionalidades principais:
 
-* **lojas & vendedores**: seletor global para alternar a visão do sistema entre unidades específicas ou visualizar todas juntas.
-* **clientes & bancos**: cadastro e relacionamento básico para apoio no fluxo de vendas e financiamento.
-* **manutenção**: registro e acompanhamento de veículos em preparação ou reparo mecânico.
+1. **Dashboard Executivo:**
+   * Indicadores de desempenho (KPIs) com total de veículos no escopo, disponíveis, vendidos, em manutenção e valor total investido no estoque.
+   * Gráficos interativos de distribuição de veículos por status e por marca.
+2. **Barra Lateral Avançada:**
+   * Indicador de status de conexão com a API em tempo real.
+   * Filtro global de loja para segmentar toda a operação.
+3. **Gestão de Estoque de Veículos:**
+   * Listagem completa com filtros avançados por status (`disponivel`, `vendido`, `em_manutencao`), busca textual por marca/modelo e slider de preço máximo.
+   * Formulário para cadastro de novos veículos.
+4. **Registro de Vendas e Financiamentos:**
+   * Seleção de veículos disponíveis no estoque para efetuar vendas à vista ou financiadas associando clientes e vendedores.
+5. **Histórico de Veículos Vendidos:**
+   * Aba dedicada para acompanhamento dos veículos que já foram comercializados pela rede.
+6. **Ordens de Manutenção:**
+   * Abertura de chamados de revisão e manutenção para mecânicos, atualizando automaticamente o status do veículo.
+7. **Gestão de Lojas e Funcionários:**
+   * Visualização das unidades da rede (lojas) e de suas equipes (gerentes, vendedores e mecânicos).
 
-### ⚙️ infraestrutura e ux
+---
 
-* interface responsiva em streamlit integrada com backend (fastapi / xano).
-* monitoramento em tempo real do status de conexão com a api na barra lateral.
+## 🛠️ 4. Arquitetura e Tecnologias
+* **Frontend:** Streamlit (Python) - Interface web reativa e moderna.
+* **Backend:** FastAPI (Python) - API REST robusta com validação Pydantic.
+* **Banco de Dados / Regras de Negócio:** Xano (XanoScript / Cloud BaaS).
+* **Testes Automatizados:** Pytest (na pasta `tests/`).
+
+---
+
+## ⚙️ 5. Como Instalar e Rodar
+
+### Pré-requisitos
+* Python 3.12 ou superior instalado.
+* Gerenciador de pacotes `uv` ou `pip`.
+
+### Passos para execução:
+
+1. **Criar e ativar o ambiente virtual (Python 3.12):**
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   ```
+
+2. **Instalar as dependências:**
+   ```powershell
+   uv pip install -r backend/requirements.txt
+   uv pip install -r frontend/requirements.txt
+   ```
+
+3. **Rodar os Testes Automatizados:**
+   ```powershell
+   python -m pytest
+   ```
+
+4. **Rodar o Backend (FastAPI):**
+   ```powershell
+   uvicorn backend.main:app --reload --port 8000
+   ```
+   *(Acesse a documentação Swagger em `http://127.0.0.1:8000/docs`)*
+
+5. **Rodar o Frontend (Streamlit) em outro terminal:**
+   ```powershell
+   .\.venv\Scripts\Activate.ps1
+   streamlit run frontend/app.py
+   ```
+   *(Acesse a interface web em `http://localhost:8501`)*
